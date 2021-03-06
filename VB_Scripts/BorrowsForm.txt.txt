@@ -1,0 +1,152 @@
+Dim dateflag As Integer
+
+Public Sub comboboxInitialize()
+Dim i As Integer
+Dim str As String
+i = 0
+bookidCombo.Clear
+bookidCombo.AddItem "Select Book_ID"
+bookAdodc.Recordset.MoveFirst
+If bookAdodc.Recordset.EOF = False Then
+While i < bookAdodc.Recordset.RecordCount
+    str = bookAdodc.Recordset.Fields(0).Value
+    bookidCombo.AddItem str
+    bookAdodc.Recordset.MoveNext
+    i = i + 1
+Wend
+End If
+
+i = 0
+bridCombo.Clear
+bridCombo.AddItem "Select Book_ID"
+borrowerAdodc.Recordset.MoveFirst
+If borrowerAdodc.Recordset.EOF = False Then
+While i < borrowerAdodc.Recordset.RecordCount
+    str = borrowerAdodc.Recordset.Fields(0).Value
+    bridCombo.AddItem str
+    borrowerAdodc.Recordset.MoveNext
+    i = i + 1
+Wend
+bridCombo.Text = "Select BR_ID"
+bookidCombo.Text = "Select Book_ID"
+End If
+End Sub
+
+Private Sub bookformCmd_Click()
+bookForm.Show
+Me.Hide
+End Sub
+
+Private Sub borrowerfromCmd_Click()
+borrowerForm.Show
+Me.Hide
+End Sub
+
+
+
+Private Sub deleteCmd_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to delete?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    borrowsAdodc.Recordset.Delete
+    Else
+        Exit Sub
+End If
+End Sub
+
+Private Sub exitCmd_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to Exit?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    End
+End If
+End Sub
+
+Private Sub Form_Load()
+Me.WindowState = vbMaximized
+comboboxInitialize
+End Sub
+
+Private Sub insertCmd_Click()
+If (bridCombo.Text = "" Or bridCombo.Text = "Select BR_ID") Then
+    MsgBox "Select an BR_ID"
+    bridCombo.SetFocus
+    Exit Sub
+End If
+If (bookidCombo.Text = "" Or bookidCombo.Text = "Select Book_ID") Then
+    MsgBox "Select an Book_ID"
+    bookidCombo.SetFocus
+    Exit Sub
+End If
+If dateflag = 1 Then
+    MsgBox "Date Of Issue has to be earlier than Date of Return"
+    datereturnCal.SetFocus
+    Exit Sub
+End If
+borrowsAdodc.Recordset.AddNew
+borrowsAdodc.Recordset.Fields(0).Value = bookidCombo.Text 'Book_ID
+borrowsAdodc.Recordset.Fields(1).Value = bridCombo.Text 'BR_ID
+borrowsAdodc.Recordset.Fields(2).Value = dateissueCal.Value 'Date of issue
+borrowsAdodc.Recordset.Fields(3).Value = datereturnCal.Value 'Date of return
+MsgBox "Insertion successful"
+End Sub
+
+Private Sub logoutCmd_Click()
+loginForm.Show
+Me.Hide
+End Sub
+
+Private Sub modifyCmd_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to Modify?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    Else
+        Exit Sub
+End If
+If bookidCombo.Text <> "Select Book_ID" Then
+    borrowsAdodc.Recordset.Fields(0).Value = bookCombo.Text 'Book_Id
+End If
+If bridCombo.Text <> "Select BR_ID" Then
+    borrowsAdodc.Recordset.Fields(1).Value = bridCombo.Text 'BR_ID
+End If
+If dateflag = 1 Then
+    MsgBox "Date Of Issue has to be earlier than Date of Return"
+    datereturnCal.SetFocus
+    Exit Sub
+End If
+
+answer = MsgBox("Want to modify Date of Issue?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    borrowsAdodc.Recordset.Fields(2).Value = dateissueCal.Value 'Date Of Issue
+End If
+answer = MsgBox("Want to modify Date of Return?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    borrowsAdodc.Recordset.Fields(3).Value = datereturnCal.Value 'Date Of Return
+End If
+MsgBox "Modification successful"
+End Sub
+
+Private Sub resetCmd_Click()
+bridCombo.Text = "Select BR_ID"
+bookidCombo.Text = "Select Book_ID"
+dateissueCal.Today
+datereturnCal.Today
+End Sub
+
+Private Sub Timer1_Timer()
+dateissueText.Caption = dateissueCal.Value
+datereturnText.Caption = datereturnCal.Value
+If dateissueCal.Value > datereturnCal.Value Then
+    datereturnText.BackColor = &HFF&
+    dateflag = 1
+Else
+datereturnText.BackColor = 65280
+    dateflag = 0
+End If
+If borrowsAdodc.Recordset.Fields(3) - borrowsAdodc.Recordset.Fields(2) > 14 Then
+    fineText.Caption = (borrowsAdodc.Recordset.Fields(3) - borrowsAdodc.Recordset.Fields(2)) * 2
+    fineText.Caption = fineText.Caption + ".00/-"
+Else
+fineText.Caption = "00.00/-"
+End If
+End Sub

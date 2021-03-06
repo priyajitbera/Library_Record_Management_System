@@ -1,0 +1,36 @@
+Dim attempt As Integer
+Private Sub Form_Load()
+Dim username As String
+Dim password As String
+End Sub
+
+Private Sub loginButton_Click()
+username = "system"
+password = "12345"
+If (attempt > 2) Then
+MsgBox "More than 3 attempts!!!"
+End
+End If
+
+If (Text1 = username And Text2 = password) Then
+MsgBox "You have successfully LoggedIn"
+borrowerForm.Show
+Me.Hide
+Else
+attempt = (attempt + 1)
+MsgBox "Wrong Username or Password"
+End If
+End Sub
+
+Private Sub loginCancelButton_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to Exit?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    End
+End If
+End Sub
+
+Private Sub timedateTimer_Timer()
+labeldate.Caption = Date
+labeltime.Caption = Time
+End Sub

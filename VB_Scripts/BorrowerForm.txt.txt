@@ -1,0 +1,221 @@
+Dim phoneFlag As Integer
+Dim br_id_arr(100) As String
+Dim i As Integer
+Dim x As Integer
+Dim a As Integer
+Dim index As Integer
+Dim br_id As String
+
+Public Function reinitialize()
+Dim c As Integer
+Data1.Recordset.MoveFirst
+c = 0
+While Data1.Recordset.EOF = False
+     br_id_arr(c) = Data1.Recordset.Fields(0).Value
+     Data1.Recordset.MoveNext
+     c = c + 1
+Wend
+End Function
+
+Private Sub ageScroll_Change()
+ageshowLabel.Caption = ageScroll.Value
+End Sub
+
+Private Sub bangaloreButton_Click()
+cityText.Caption = "Bangalore"
+cityText.BackColor = &HC0FFC0
+End Sub
+
+Private Sub bookformCmd_Click()
+bookForm.Show
+Me.Hide
+End Sub
+
+Private Sub borrowsformCmd_Click()
+borrowsForm.Show
+Me.Hide
+End Sub
+
+Private Sub chennaiButton_Click()
+cityText.Caption = "Chennai"
+cityText.BackColor = &HC0FFFF
+End Sub
+
+Private Sub deleteCmd_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to delete?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    Data1.Recordset.Delete
+    Else
+        Exit Sub
+End If
+End Sub
+
+Private Sub exitCmd_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to Exit?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    End
+End If
+End Sub
+
+Private Sub Form_Load()
+Me.WindowState = vbMaximized
+End Sub
+
+Private Sub insertCmd_Click()
+Dim age As String
+Dim ph_no As String
+If (idText.Text = "") Then
+    MsgBox "Id field is empty"
+    idText.SetFocus
+    Exit Sub
+End If
+
+If availableBanner.Caption = "Not Available" Then
+    MsgBox "Id not available, use Unique Id"
+    idText.SetFocus
+    Exit Sub
+End If
+If phoneFlag = 1 Then
+    MsgBox "Phone field must contain numeric value"
+    phoneText.SetFocus
+    Exit Sub
+End If
+
+Data1.Recordset.AddNew
+Data1.Recordset.Fields(0).Value = idText.Text 'Id
+Data1.Recordset.Fields(1).Value = nameText.Text 'Name
+Data1.Recordset.Fields(2).Value = cityText.Caption 'City
+age = ageshowLabel.Caption
+ph_no = phoneText.Text
+Data1.Recordset.Fields(3).Value = age 'Age
+Data1.Recordset.Fields(4).Value = ph_no 'Ph_NO
+
+availableBanner.Caption = "Not Available"
+availableBanner.BackColor = &H8080FF
+MsgBox "Insertion successful"
+End Sub
+
+Private Sub checkavailButton_Click()
+a = Data1.Recordset.RecordCount
+i = 0
+Data1.Recordset.MoveFirst
+
+If (idText.Text = "") Then
+    MsgBox "Id field is empty"
+    idText.SetFocus
+    Exit Sub
+End If
+
+While i < Data1.Recordset.RecordCount
+        If Data1.Recordset.Fields(0).Value = idText.Text Then
+        availableBanner.Caption = "Not Available"
+        availableBanner.BackColor = &H8080FF
+        idText.SetFocus
+        i = Data1.Recordset.RecordCount
+        Data1.Recordset.MovePrevious
+        Else
+            availableBanner.Caption = "Available"
+            availableBanner.BackColor = &HC000&
+         End If
+        Data1.Recordset.MoveNext
+        i = i + 1
+Wend
+End Sub
+
+Private Sub hyderabadbutton_Click()
+cityText.Caption = "Hyderabad"
+cityText.BackColor = &HFFFFC0
+End Sub
+
+Private Sub kolkataButton_Click()
+cityText.Caption = "Kolkata"
+cityText.BackColor = &HC0C0FF
+End Sub
+
+Private Sub logoutCmd_Click()
+loginForm.Show
+Me.Hide
+End Sub
+
+Private Sub modifyCmd_Click()
+Dim age As String
+Dim ph_no As String
+
+If availableBanner.Caption = "Available" Then
+    MsgBox "Given Id is not present to modify"
+    idText.SetFocus
+    Exit Sub
+End If
+If phoneFlag = 1 Then
+    MsgBox "Phone field must contain numeric value"
+    phoneText.SetFocus
+    Exit Sub
+End If
+If idText.Text <> "" Then
+    Data1.Recordset.Fields(0).Value = idText.Text 'Id
+End If
+
+If nameText.Text <> "" Then
+    Data1.Recordset.Fields(1).Value = nameText.Text 'Name
+End If
+
+If cityText.Caption <> "Select City" Then
+    Data1.Recordset.Fields(2).Value = cityText.Caption 'City
+End If
+age = ageshowLabel.Caption
+Data1.Recordset.Fields(3).Value = age 'Age
+ph_no = phoneText.Text
+If ph_no <> "" Then
+    Data1.Recordset.Fields(4).Value = ph_no 'Ph_NO
+End If
+MsgBox "Modification successful"
+End Sub
+
+Private Sub movefirstCmd_Click()
+Data1.Recordset.MoveFirst
+End Sub
+
+Private Sub movelastCmd_Click()
+Data1.Recordset.MoveLast
+End Sub
+
+Private Sub movenextCmd_Click()
+If Data1.Recordset.EOF = False Then
+    Data1.Recordset.MoveNext
+End If
+End Sub
+
+Private Sub movieprevCmd_Click()
+If Data1.Recordset.BOF = False Then
+    Data1.Recordset.MovePrevious
+End If
+End Sub
+
+Private Sub mumbaiButton_Click()
+cityText.Caption = "Mumbai"
+cityText.BackColor = &HC0E0FF
+End Sub
+
+Private Sub newdelhiButton_Click()
+cityText.Caption = "New Delhi"
+cityText.BackColor = &HFFFFFF
+End Sub
+
+Private Sub resetCmd_Click()
+idText.Text = ""
+nameText.Text = ""
+cityText.Caption = ""
+phoneText.Text = ""
+End Sub
+
+Private Sub Timer1_Timer()
+If (IsNumeric(phoneText.Text)) Then
+phoneText.BackColor = &H8000000F
+phoneFlag = 0
+Else
+phoneText.BackColor = &HFF&
+phoneFlag = 1
+End If
+End Sub

@@ -1,0 +1,177 @@
+Private Sub checkavailCmd_Click()
+Print subjectCombo.DataMember
+Dim a As Integer
+Dim i As Integer
+a = Data1.Recordset.RecordCount
+i = 0
+Data1.Recordset.MoveFirst
+
+If (idText.Text = "") Then
+    MsgBox "Id field is empty"
+    idText.SetFocus
+    Exit Sub
+End If
+
+While i < Data1.Recordset.RecordCount
+        If Data1.Recordset.Fields(0).Value = idText.Text Then
+        availableBanner.Caption = "Not Available"
+        availableBanner.BackColor = &H8080FF
+        idText.SetFocus
+        i = Data1.Recordset.RecordCount
+        Data1.Recordset.MovePrevious
+        'msbox "Sailor id already present", vOKOnly + vbInformation, "Duplicate"
+        'idText.SetFocus
+        'x = x + 1
+        Else
+            availableBanner.Caption = "Available"
+            availableBanner.BackColor = &HC000&
+    End If
+        Data1.Recordset.MoveNext
+        i = i + 1
+Wend
+End Sub
+
+Private Sub borrowerformCmd_Click()
+borrowerForm.Show
+Me.Hide
+End Sub
+
+Private Sub borrowsformCmd_Click()
+borrowsForm.Show
+Me.Hide
+End Sub
+
+Private Sub deleteCmd_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to delete?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    Data1.Recordset.Delete
+    Else
+        Exit Sub
+End If
+End Sub
+
+Private Sub exitCmd_Click()
+Dim answer As Integer
+answer = MsgBox("Sure to Exit?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    End
+End If
+End Sub
+
+Private Sub Form_Load()
+Me.WindowState = vbMaximized
+subjectCombo.AddItem "Select Subject"
+subjectCombo.AddItem "Computer Science"
+subjectCombo.AddItem "Geography"
+subjectCombo.AddItem "History"
+subjectCombo.AddItem "Philosophy"
+subjectCombo.AddItem "Physics"
+subjectCombo.AddItem "Psychology"
+subjectCombo.AddItem "Sociology"
+End Sub
+
+Private Sub insertCmd_Click()
+Dim age As String
+Dim ph_no As String
+If (idText.Text = "") Then
+    MsgBox "Id field is empty"
+    idText.SetFocus
+    Exit Sub
+End If
+
+If availableBanner.Caption = "Not Available" Then
+    MsgBox "Id not available, use Unique Id"
+    idText.SetFocus
+    Exit Sub
+End If
+If titleText.Text = "" Then
+    MsgBox "Give a Title"
+    titleText.SetFocus
+    Exit Sub
+End If
+
+If authorText.Text = "" Then
+    MsgBox "Give a Author"
+    authorText.SetFocus
+    Exit Sub
+End If
+If subjectCombo.Text = "Select Subject" Then
+    MsgBox "Select a Subject"
+    subjectCombo.SetFocus
+    Exit Sub
+End If
+
+Data1.Recordset.AddNew
+Data1.Recordset.Fields(0).Value = idText.Text 'Id
+Data1.Recordset.Fields(1).Value = authorText.Text 'Author
+Data1.Recordset.Fields(2).Value = subjectCombo.Text 'Subject
+
+If subjectCombo.Text <> "Select Subject" Then
+    Data1.Recordset.Fields(3).Value = titleText.Text 'Title
+End If
+
+availableBanner.Caption = "Not Available"
+availableBanner.BackColor = &H8080FF
+MsgBox "Insertion successful"
+End Sub
+
+Private Sub logoutCmd_Click()
+loginForm.Show
+Me.Hide
+End Sub
+
+Private Sub modifyCmd_Click()
+Dim answer As Integer
+If availableBanner.Caption = "Available" Then
+    MsgBox "Given Id is not present to Modify"
+    idText.SetFocus
+    Exit Sub
+End If
+
+answer = MsgBox("Sure to Modify?", vbQuestion + vbYesNo + vbDefaultButton2, "Message Box Title")
+If answer = vbYes Then
+    Else
+        Exit Sub
+End If
+If idText.Text <> "" Then
+    Data1.Recordset.Fields(0).Value = idText.Text 'Id
+End If
+If titleText.Text <> "" Then
+    Data1.Recordset.Fields(1).Value = authorText.Text 'Author
+End If
+If authorText.Text <> "" Then
+    Data1.Recordset.Fields(2).Value = subjectCombo.Text 'Subject
+End If
+If subjectCombo.Text <> "Select Subject" Or subjectCombo.Text = "" Then
+        Data1.Recordset.Fields(3).Value = titleText.Text 'Title
+End If
+MsgBox "Modification successful"
+End Sub
+
+Private Sub movefirstCmd_Click()
+Data1.Recordset.MoveFirst
+End Sub
+
+Private Sub movelastCmd_Click()
+Data1.Recordset.MoveLast
+End Sub
+
+Private Sub movenextCmd_Click()
+If Data1.Recordset.EOF = False Then
+    Data1.Recordset.MoveNext
+End If
+End Sub
+
+Private Sub moveprevCmd_Click()
+If Data1.Recordset.BOF = False Then
+    Data1.Recordset.MovePrevious
+End If
+End Sub
+
+Private Sub resetCmd_Click()
+idText.Text = ""
+titleText.Text = ""
+authorText.Text = ""
+subjectCombo.Text = "Select Subject"
+End Sub
